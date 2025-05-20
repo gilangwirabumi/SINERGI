@@ -42,7 +42,7 @@ Kalender Kerja
 Menampilkan hari kehadiran dan cuti Anda dalam tampilan kalender.
 
 
-6. Aplikasi tersedi di link berikut
+6. Aplikasi tersedia di link berikut
    https://sinergi.shinyapps.io/SINERGI/
 
 7. data tersimpan di server shinyapps.io
