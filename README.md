@@ -27,6 +27,7 @@ Tampilkan tanggal presensi dan cuti secara visual.
 
 🎨 Tampilan warna hijau cerah dengan logo SINERGI.
 
+
 ⚙️ Cara Pakai
 Jalankan aplikasi di RStudio (paket: shiny, shinydashboard, dplyr, DT, lubridate, plotly).
 
@@ -38,6 +39,7 @@ Setelah login, gunakan menu sesuai peranmu.
 
 Admin bisa input dan pantau presensi/cuti, karyawan bisa ajukan cuti dan lihat presensi.
 
+
 📂 Struktur File
 app.R — kode utama aplikasi
 
@@ -45,12 +47,14 @@ data/ — tempat menyimpan file data (presensi, cuti, user)
 
 www/ — tempat gambar untuk tampilan aplikasi (logo dan background)
 
+
 ⚠️ Catatan Penting
 Data disimpan di file CSV lokal, cocok untuk perusahaan kecil atau testing.
 
 Password belum dienkripsi, jadi jangan dipakai untuk data penting.
 
 Untuk skala besar, lebih baik pakai database.
+
 
 📞 Kontak Customer Service
 Kalau ada pertanyaan atau butuh bantuan:
