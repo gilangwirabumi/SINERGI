@@ -92,6 +92,41 @@ ui <- dashboardPage(
           background-color: #00c853;
           border-color: #00c853;
         }
+        /* Styling halaman awal */
+        #landing-page {
+          position: relative;
+          text-align: center;
+          color: #333;
+          padding: 20px;
+        }
+        #landing-page .bg-image {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background-size: cover;
+          opacity: 0.15;
+          z-index: -1;
+        }
+        #landing-page .content-box {
+          background-color: rgba(255,255,255,0.85);
+          border-radius: 10px;
+          padding: 30px;
+          max-zwidth: 500px;
+          margin: 40px auto;
+          box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        #landing-page .btn-login, #landing-page .btn-about {
+          margin: 10px;
+        }
+        #customer-service {
+          background-color: #e0f7fa;
+          border: 1px solid #00e676;
+          border-radius: 10px;
+          padding: 15px;
+          max-width: 350px;
+          margin: 30px auto;
+          font-weight: bold;
+          color: #00796b;
+        }
       "))
     ),
     uiOutput("bodyUI")
@@ -104,7 +139,8 @@ server <- function(input, output, session) {
     username = NULL,
     role = NULL,
     login = FALSE,
-    register_mode = FALSE
+    register_mode = FALSE,
+    show_landing = TRUE
   )
   
   output$logout_btn <- renderUI({
@@ -116,6 +152,7 @@ server <- function(input, output, session) {
     rv$username <- NULL
     rv$role <- NULL
     rv$perusahaan <- NULL
+    rv$show_landing <- TRUE
     updateTextInput(session, "username", value = "")
     updateTextInput(session, "password", value = "")
   })
@@ -140,7 +177,24 @@ server <- function(input, output, session) {
   })
   
   output$bodyUI <- renderUI({
-    if (!rv$login) {
+    if (rv$show_landing && !rv$login) {
+      # Halaman landing page pertama
+      tagList(
+        div(id = "landing-page",
+            div(class = "bg-image"),
+            div(class = "content-box",
+                h2("Selamat Datang di SINERGI"),
+                p("Platform manajemen presensi dan cuti karyawan yang mudah dan efisien."),
+                actionButton("go_login", "Login", class = "btn btn-primary btn-login"),
+                actionButton("go_about", "Tentang Kami", class = "btn btn-info btn-about")
+            ),
+            div(id = "customer-service",
+                "Customer Service: +62 877-3916-8516"
+            )
+        )
+      )
+    } else if (!rv$login) {
+      # Halaman login dan register
       fluidPage(
         box(title = "Login", status = "primary", solidHeader = TRUE, width = 6,
             selectInput("perusahaan", "Pilih Perusahaan", choices = unique(get_users()$perusahaan)),
@@ -162,6 +216,7 @@ server <- function(input, output, session) {
         )
       )
     } else {
+      # Halaman utama aplikasi jika sudah login
       tabItems(
         tabItem("input_presensi",
                 fluidPage(
@@ -202,6 +257,19 @@ server <- function(input, output, session) {
     }
   })
   
+  observeEvent(input$go_login, {
+    rv$show_landing <- FALSE
+  })
+  
+  observeEvent(input$go_about, {
+    showModal(modalDialog(
+      title = "Tentang Kami",
+      "SINERGI adalah aplikasi manajemen presensi dan cuti karyawan yang dirancang untuk memudahkan admin dan karyawan dalam mengelola absensi dan cuti dengan cepat dan efisien.",
+      easyClose = TRUE,
+      footer = modalButton("Tutup")
+    ))
+  })
+  
   observeEvent(input$login_btn, {
     users <- get_users()
     user <- users %>% filter(
@@ -214,6 +282,7 @@ server <- function(input, output, session) {
       rv$username <- user$username
       rv$role <- user$role
       rv$perusahaan <- user$perusahaan
+      rv$show_landing <- FALSE
     } else {
       showModal(modalDialog("Login gagal: Periksa kembali data Anda!"))
     }
@@ -328,14 +397,11 @@ server <- function(input, output, session) {
       mode = "markers",
       color = ~event,
       marker = list(size = 10)
-    ) %>%
-      layout(
-        title = "Kalender Presensi dan Cuti",
-        xaxis = list(title = "Tanggal"),
-        yaxis = list(title = "")
-      )
+    ) %>% layout(
+      yaxis = list(showticklabels = FALSE),
+      xaxis = list(title = "Tanggal")
+    )
   })
 }
 
 shinyApp(ui, server)
-
