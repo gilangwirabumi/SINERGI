@@ -50,8 +50,14 @@ get_presensi <- function() {
 }
 
 get_cuti <- function() {
-  read.csv("data/data_cuti.csv", stringsAsFactors = FALSE) %>%
-    mutate(tanggal = as.Date(tanggal))
+  cuti <- read.csv("data/data_cuti.csv", stringsAsFactors = FALSE)
+  
+  # Tambahkan kolom 'alasan' jika tidak ada
+  if (!"alasan" %in% names(cuti)) {
+    cuti$alasan <- ""
+  }
+  
+  cuti %>% mutate(tanggal = as.Date(tanggal))
 }
 
 ui <- dashboardPage(
